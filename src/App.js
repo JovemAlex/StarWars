@@ -3,7 +3,7 @@ import './App.css';
 import Table from './components/Table';
 import ProviderPlanets from './context/ProviderPlanets';
 import FilterName from './components/FilterName';
-import FilterNumber from './components/FilterNumberr';
+import FilterNumber from './components/FilterNumber';
 
 function App() {
   return (
