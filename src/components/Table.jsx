@@ -1,14 +1,31 @@
 import React, { useContext } from 'react';
 import ContextPlanets from '../context/ContextPlanets';
-import FilterName from './FilterName';
 
 function Table() {
-  const { planets, filter: { filters } } = useContext(ContextPlanets);
-  const { filterByName: { name } } = filters;
+  const { planets, filterByName, filterByNumericValues } = useContext(ContextPlanets);
   // console.log(planets);
+
+  let listOfPlanets = planets
+    .filter((e) => e.name.includes(filterByName.name));
+  // console.log(listOfPlanets);
+
+  filterByNumericValues.forEach(({ column, comparison, value }) => {
+    listOfPlanets = listOfPlanets.filter((planet) => {
+      if (comparison === 'maior que') {
+        return Number(planet[column]) > Number(value);
+      }
+      if (comparison === 'menor que') {
+        return Number(planet[column]) < Number(value);
+      }
+      if (comparison === 'igual a') {
+        return Number(planet[column]) === Number(value);
+      }
+      throw new Error('Sem Filtro');
+    });
+  });
+
   return (
     <div>
-      <FilterName />
       <table>
         <thead>
           <tr>
@@ -28,8 +45,7 @@ function Table() {
           </tr>
         </thead>
         <tbody>
-          { planets
-            .filter((value) => value.name.toLowerCase().includes(name.toLowerCase()))
+          { listOfPlanets
             .map((e) => (
               <tr key={ e.name }>
                 <td>{ e.name }</td>
