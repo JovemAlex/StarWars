@@ -2,19 +2,29 @@ import React, { useContext, useState } from 'react';
 import ContextPlanets from '../context/ContextPlanets';
 
 function FilterNumber() {
-  const { setFilterByNumericValues } = useContext(ContextPlanets);
+  const {
+    filterByNumericValues,
+    setFilterByNumericValues,
+  } = useContext(ContextPlanets);
   const [columnValue, setColumnValue] = useState('population');
   const [comparisonValue, setComparisonValue] = useState('maior que');
   const [filterValue, setFilterValue] = useState(0);
 
   const handleClick = () => {
     // console.log('cliquei');
-    setFilterByNumericValues([{
-      column: columnValue,
-      comparison: comparisonValue,
-      value: filterValue,
-    }]);
+    setFilterByNumericValues((prevState) => [
+      ...prevState,
+      {
+        column: columnValue,
+        comparison: comparisonValue,
+        value: filterValue,
+      },
+    ]);
   };
+
+  const optionSelected = (option) => (
+    filterByNumericValues.some((e) => e.column === option)
+  );
 
   return (
     <div>
@@ -27,11 +37,31 @@ function FilterNumber() {
           value={ columnValue }
           onChange={ (e) => setColumnValue(e.target.value) }
         >
-          <option value="population">population</option>
+          {/* <option value="population">population</option>
           <option value="orbital_period">orbital_period</option>
           <option value="diameter">diameter</option>
           <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option>
+          <option value="surface_water">surface_water</option> */}
+          { optionSelected('population')
+            && '' }
+          { !optionSelected('population')
+            && <option value="population">population</option> }
+          { optionSelected('orbital_period')
+            && '' }
+          { !optionSelected('orbital_period')
+            && <option value="orbital_period">orbital_period</option> }
+          { optionSelected('diameter')
+            && '' }
+          { !optionSelected('diameter')
+            && <option value="diameter">diameter</option> }
+          { optionSelected('rotation_period')
+            && '' }
+          { !optionSelected('rotation_period')
+            && <option value="rotation_period">rotation_period</option> }
+          { optionSelected('surface_water')
+            && '' }
+          { !optionSelected('surface_water')
+            && <option value="surface_water">surface_water</option> }
         </select>
       </label>
 
