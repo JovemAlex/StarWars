@@ -3,24 +3,18 @@ import ContextPlanets from '../context/ContextPlanets';
 
 function Table() {
   const { planets, filterByName, filterByNumericValues } = useContext(ContextPlanets);
-  // console.log(planets);
 
-  let listOfPlanets = planets
-    .filter((e) => e.name.includes(filterByName.name));
-  // console.log(listOfPlanets);
+  let planetsFilter = planets.results
+    .filter((value) => value.name.includes(filterByName.name));
 
   filterByNumericValues.forEach(({ column, comparison, value }) => {
-    listOfPlanets = listOfPlanets.filter((planet) => {
+    planetsFilter = planetsFilter.filter((planet) => {
       if (comparison === 'maior que') {
-        return Number(planet[column]) > Number(value);
+        return parseInt(planet[column], 10) > value;
+      } if (comparison === 'menor que') {
+        return parseInt(planet[column], 10) < value;
       }
-      if (comparison === 'menor que') {
-        return Number(planet[column]) < Number(value);
-      }
-      if (comparison === 'igual a') {
-        return Number(planet[column]) === Number(value);
-      }
-      throw new Error('Sem Filtro');
+      return parseInt(planet[column], 10) === value;
     });
   });
 
@@ -44,25 +38,25 @@ function Table() {
             <th>URL</th>
           </tr>
         </thead>
+
         <tbody>
-          { listOfPlanets
-            .map((e) => (
-              <tr key={ e.name }>
-                <td>{ e.name }</td>
-                <td>{ e.rotation_period }</td>
-                <td>{ e.orbital_period }</td>
-                <td>{ e.diameter }</td>
-                <td>{ e.climate }</td>
-                <td>{ e.gravity }</td>
-                <td>{ e.terrain }</td>
-                <td>{ e.surface_water }</td>
-                <td>{ e.population }</td>
-                <td>{ e.films.map((el) => <p key={ el }>{ el }</p>) }</td>
-                <td>{ e.created }</td>
-                <td>{ e.edited }</td>
-                <td>{ e.url }</td>
-              </tr>
-            )) }
+          { planetsFilter.map((e, index) => (
+            <tr key={ index }>
+              <td>{ e.name }</td>
+              <td>{ e.rotation_period }</td>
+              <td>{ e.orbital_period }</td>
+              <td>{ e.diameter }</td>
+              <td>{ e.climate }</td>
+              <td>{ e.gravity }</td>
+              <td>{ e.terrain }</td>
+              <td>{ e.surface_water }</td>
+              <td>{ e.population }</td>
+              <td>{ e.films.map((el, i) => <p key={ i }>{ el }</p>) }</td>
+              <td>{ e.created }</td>
+              <td>{ e.edited }</td>
+              <td>{ e.url }</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

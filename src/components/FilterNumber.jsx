@@ -1,70 +1,60 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import ContextPlanets from '../context/ContextPlanets';
 
-function FilterNumber() {
-  const {
-    filterByNumericValues,
-    setFilterByNumericValues,
-  } = useContext(ContextPlanets);
+const optionsDisponiveis = [
+  'population', 'orbital_period', 'diameter', 'rotation_period', 'surface_water'];
+
+function FilterValue() {
+  const { filterByNumericValues, setFilterByNumericValues } = useContext(ContextPlanets);
   const [columnValue, setColumnValue] = useState('population');
   const [comparisonValue, setComparisonValue] = useState('maior que');
   const [filterValue, setFilterValue] = useState(0);
 
-  const handleClick = () => {
-    // console.log('cliquei');
+  const FilterBtnHandleClick = () => {
     setFilterByNumericValues((prevState) => [
       ...prevState,
       {
         column: columnValue,
         comparison: comparisonValue,
-        value: filterValue,
-      },
-    ]);
+        value: parseInt(filterValue, 10),
+      }]);
   };
 
-  const optionSelected = (option) => (
-    filterByNumericValues.some((e) => e.column === option)
-  );
+  const optionSelected = (option) => (filterByNumericValues
+    .some((findOption) => findOption.column === option));
+
+  const optionNoSelected = optionsDisponiveis.filter((f) => !optionSelected(f));
+  const firstOption = optionNoSelected[0];
+
+  useEffect(() => {
+    setColumnValue(firstOption);
+  }, [filterByNumericValues.length, firstOption]); /* eslint-disable-line react-hooks/exhaustive-deps */
+  // Ref:
+  // How do I configure eslint rules to ignore react-hooks/exhaustive-deps globally?
+  // https://stackoverflow.com/questions/65704653/how-do-i-configure-eslint-rules-to-ignore-react-hooks-exhaustive-deps-globally
 
   return (
     <div>
       <label htmlFor="column">
-        { 'Selecione a coluna: ' }
+        {'Selecione a Coluna: '}
         <select
           name="column"
           id="column"
           data-testid="column-filter"
           value={ columnValue }
-          onChange={ (e) => setColumnValue(e.target.value) }
+          onChange={ ({ target }) => setColumnValue(target.value) }
         >
-          {/* <option value="population">population</option>
-          <option value="orbital_period">orbital_period</option>
-          <option value="diameter">diameter</option>
-          <option value="rotation_period">rotation_period</option>
-          <option value="surface_water">surface_water</option> */}
-          { optionSelected('population')
-            && '' }
-          { !optionSelected('population')
-            && <option value="population">population</option> }
-          { optionSelected('orbital_period')
-            && '' }
-          { !optionSelected('orbital_period')
-            && <option value="orbital_period">orbital_period</option> }
-          { optionSelected('diameter')
-            && '' }
-          { !optionSelected('diameter')
-            && <option value="diameter">diameter</option> }
-          { optionSelected('rotation_period')
-            && '' }
-          { !optionSelected('rotation_period')
-            && <option value="rotation_period">rotation_period</option> }
-          { optionSelected('surface_water')
-            && '' }
-          { !optionSelected('surface_water')
-            && <option value="surface_water">surface_water</option> }
+          { optionNoSelected.map((e) => (
+            <option
+              key={ e }
+              value={ e }
+            >
+              {e}
+            </option>
+          ))}
         </select>
       </label>
-
+      { ' ' }
       <label htmlFor="comparison">
         { 'Selecione qual será a comparação: ' }
         <select
@@ -72,34 +62,35 @@ function FilterNumber() {
           id="comparison"
           data-testid="comparison-filter"
           value={ comparisonValue }
-          onChange={ (e) => setComparisonValue(e.target.value) }
+          onChange={ ({ target }) => setComparisonValue(target.value) }
         >
           <option value="maior que">maior que</option>
           <option value="menor que">menor que</option>
           <option value="igual a">igual a</option>
         </select>
       </label>
-
+      { ' ' }
       <label htmlFor="filterValue">
         { 'Valor para comparação: ' }
         <input
           type="number"
-          id="filterValue"
           data-testid="value-filter"
+          id="filterValue"
           value={ filterValue }
-          onChange={ (e) => setFilterValue(e.target.value) }
+          onChange={ ({ target }) => setFilterValue(target.value) }
         />
       </label>
-      { ' ' }
+      {' '}
       <button
         type="button"
         data-testid="button-filter"
-        onClick={ handleClick }
+        onClick={ FilterBtnHandleClick }
       >
         Filtrar
       </button>
+
     </div>
   );
 }
 
-export default FilterNumber;
+export default FilterValue;

@@ -8,8 +8,8 @@ import FilterNumber from './components/FilterNumber';
 function App() {
   return (
     <ProviderPlanets>
-      <FilterNumber />
       <FilterName />
+      <FilterNumber />
       <Table />
     </ProviderPlanets>
   );
